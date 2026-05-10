@@ -683,5 +683,11 @@
         </div>
     </div>
 </div>
+    <footer style="margin-top:40px;text-align:center;padding:20px;color:#cbd5e1;font-size:15px;">
+        Developed by <strong>Muhammad Ahmad</strong> • 
+        <a href="https://m-ahmad069.github.io/" target="_blank" style="color:#60a5fa;text-decoration:none;font-weight:600;">
+            Portfolio Website
+        </a>
+    </footer>
 </body>
 </html>
