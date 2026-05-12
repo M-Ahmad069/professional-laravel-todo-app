@@ -1,693 +1,1282 @@
+{{-- resources/views/welcome.blade.php --}}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Laravel To Do App</title>
+    <title>Professional Laravel Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --bg-1: #0f172a;
-            --bg-2: #111827;
-            --card: rgba(255, 255, 255, 0.92);
-            --card-border: rgba(148, 163, 184, 0.22);
-            --text: #0f172a;
-            --muted: #64748b;
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --success: #16a34a;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
-            --radius: 28px;
+
+        :root{
+            --bg:#020617;
+            --sidebar:#081120;
+            --card:#0f172a;
+            --card2:#111827;
+
+            --border:rgba(255,255,255,.06);
+
+            --text:#f8fafc;
+            --muted:#94a3b8;
+
+            --blue:#3b82f6;
+            --purple:#8b5cf6;
+            --green:#10b981;
+            --orange:#f59e0b;
+            --red:#ef4444;
         }
 
-        * {
-            box-sizing: border-box;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
         }
 
-        html, body {
-            margin: 0;
-            min-height: 100%;
-            font-family: 'Inter', Arial, sans-serif;
-            color: var(--text);
+        body{
+            font-family:'Inter',sans-serif;
+
             background:
-                radial-gradient(circle at top left, rgba(59, 130, 246, 0.26), transparent 28%),
-                radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 22%),
-                linear-gradient(135deg, var(--bg-1), var(--bg-2));
+            radial-gradient(circle at top left,
+            rgba(59,130,246,.18), transparent 30%),
+
+            radial-gradient(circle at top right,
+            rgba(139,92,246,.15), transparent 30%),
+
+            var(--bg);
+
+            color:var(--text);
+
+            min-height:100vh;
+            overflow-x:hidden;
         }
 
-        body {
-            padding: 28px;
+        body::before{
+            content:'';
+            position:fixed;
+            inset:0;
+
+            background-image:
+            linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+
+            background-size:40px 40px;
+
+            pointer-events:none;
         }
 
-        .shell {
-            max-width: 1480px;
-            margin: 0 auto;
-            padding: 14px;
+        .dashboard{
+            display:grid;
+            grid-template-columns:280px 1fr;
+            min-height:100vh;
         }
 
-        .hero {
-            position: relative;
-            overflow: hidden;
-            border-radius: 34px;
-            padding: 28px;
+        /* SIDEBAR */
+
+        .sidebar{
+            background:rgba(8,17,32,.92);
+
+            border-right:1px solid var(--border);
+
+            padding:28px;
+
+            backdrop-filter:blur(20px);
+
+            position:sticky;
+            top:0;
+
+            height:100vh;
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:16px;
+
+            margin-bottom:50px;
+        }
+
+        .brand-icon{
+            width:62px;
+            height:62px;
+
+            border-radius:20px;
+
             background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(16px);
+            linear-gradient(135deg,
+            var(--blue),
+            var(--purple));
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-size:28px;
+
+            box-shadow:
+            0 20px 40px rgba(59,130,246,.25);
         }
 
-        .hero::before,
-        .hero::after {
-            content: '';
-            position: absolute;
-            border-radius: 999px;
-            pointer-events: none;
+        .brand h1{
+            font-size:26px;
+            font-weight:800;
         }
 
-        .hero::before {
-            width: 220px;
-            height: 220px;
-            right: -60px;
-            top: -80px;
-            background: rgba(37, 99, 235, 0.12);
-            filter: blur(10px);
+        .brand p{
+            color:var(--muted);
+            margin-top:4px;
+            font-size:13px;
         }
 
-        .hero::after {
-            width: 180px;
-            height: 180px;
-            left: -70px;
-            bottom: -70px;
-            background: rgba(99, 102, 241, 0.12);
-            filter: blur(10px);
+        .nav{
+            display:flex;
+            flex-direction:column;
+            gap:12px;
         }
 
-        .header {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 18px;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 26px;
-            position: relative;
-            z-index: 1;
+        .nav a{
+            text-decoration:none;
+
+            color:var(--muted);
+
+            padding:16px 18px;
+
+            border-radius:18px;
+
+            transition:.3s;
+
+            font-weight:600;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
+        .nav a:hover,
+        .nav a.active{
+
+            background:
+            linear-gradient(135deg,
+            rgba(59,130,246,.18),
+            rgba(139,92,246,.18));
+
+            color:white;
+
+            transform:translateX(4px);
         }
 
-        .brand-badge {
-            width: 58px;
-            height: 58px;
-            display: grid;
-            place-items: center;
-            border-radius: 18px;
-            background: linear-gradient(145deg, #2563eb, #7c3aed);
-            color: white;
-            font-size: 28px;
-            box-shadow: 0 16px 35px rgba(37, 99, 235, 0.35);
+        /* MAIN */
+
+        .main{
+            padding:28px;
         }
 
-        .brand-copy h1 {
-            margin: 0;
-            font-size: clamp(2rem, 3vw, 3.3rem);
-            line-height: 1.05;
-            letter-spacing: -0.04em;
-            color: #0f172a;
+        /* TOPBAR */
+
+        .topbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            background:rgba(15,23,42,.75);
+
+            border:1px solid var(--border);
+
+            padding:30px;
+
+            border-radius:30px;
+
+            margin-bottom:28px;
+
+            backdrop-filter:blur(20px);
         }
 
-        .brand-copy p {
-            margin: 8px 0 0;
-            color: var(--muted);
-            font-size: 0.98rem;
+        .welcome h2{
+            font-size:48px;
+            font-weight:800;
+            line-height:1.1;
         }
 
-        .stats {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
+        .welcome span{
+            background:
+            linear-gradient(to right,
+            #60a5fa,
+            #c084fc);
+
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
         }
 
-        .stat-card {
-            min-width: 150px;
-            padding: 16px 18px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+        .welcome p{
+            color:var(--muted);
+            margin-top:10px;
         }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            margin-bottom: 8px;
+        .profile{
+            display:flex;
+            align-items:center;
+            gap:16px;
         }
 
-        .stat-value {
-            font-size: 1.6rem;
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            color: #0f172a;
+        .avatar{
+            width:58px;
+            height:58px;
+
+            border-radius:50%;
+
+            background:
+            linear-gradient(135deg,
+            var(--blue),
+            var(--purple));
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-weight:800;
+            font-size:22px;
         }
 
-        .workspace {
-            position: relative;
-            z-index: 1;
-            margin-top: 24px;
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 24px;
-            align-items: start;
+        .logout-btn{
+            background:rgba(239,68,68,.15);
+
+            border:1px solid rgba(239,68,68,.2);
+
+            color:#f87171;
+
+            padding:12px 18px;
+
+            border-radius:14px;
+
+            cursor:pointer;
+
+            font-weight:700;
         }
 
-        .panel {
-            background: rgba(255, 255, 255, 0.96);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            box-shadow: 0 22px 60px rgba(15, 23, 42, 0.10);
-            overflow: hidden;
+        /* STATS */
+
+        .stats{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:22px;
+
+            margin-bottom:28px;
         }
 
-        .panel-head {
-            padding: 22px 22px 0;
+        .stat-card{
+            background:rgba(15,23,42,.75);
+
+            border:1px solid var(--border);
+
+            border-radius:28px;
+
+            padding:30px;
+
+            position:relative;
+
+            overflow:hidden;
+
+            backdrop-filter:blur(18px);
+
+            transition:.3s;
         }
 
-        .panel-title {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            color: #0f172a;
+        .stat-card:hover{
+            transform:translateY(-4px);
         }
 
-        .panel-subtitle {
-            margin: 8px 0 0;
-            color: var(--muted);
-            font-size: 0.95rem;
+        .stat-card h5{
+            color:var(--muted);
+            font-size:12px;
+            letter-spacing:2px;
+            text-transform:uppercase;
         }
 
-        .form-wrap {
-            padding: 18px 22px 22px;
+        .stat-card h2{
+            font-size:60px;
+            margin-top:10px;
+            font-weight:800;
         }
 
-        .field {
-            margin-top: 14px;
+        .stat-icon{
+            position:absolute;
+            right:24px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:46px;
+            opacity:.12;
         }
 
-        .label-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
+        /* CONTENT */
+
+        .content{
+            display:grid;
+            grid-template-columns:380px 1fr;
+            gap:24px;
+
+            margin-bottom:30px;
         }
 
-        label {
-            display: inline-block;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #111827;
+        .card{
+            background:rgba(15,23,42,.75);
+
+            border:1px solid var(--border);
+
+            border-radius:30px;
+
+            backdrop-filter:blur(18px);
         }
 
-        .hint {
-            font-size: 0.8rem;
-            color: var(--muted);
+        /* FORM */
+
+        .form-card{
+            padding:30px;
+
+            position:sticky;
+            top:20px;
+
+            height:fit-content;
         }
 
-        input[type="text"],
-        input[type="date"],
-        textarea,
-        select {
-            width: 100%;
-            appearance: none;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            background: linear-gradient(180deg, #fff, #fbfdff);
-            color: #0f172a;
-            border-radius: 18px;
-            padding: 15px 16px;
-            font-size: 0.98rem;
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        .title{
+            font-size:30px;
+            font-weight:800;
+            margin-bottom:8px;
         }
 
-        textarea {
-            min-height: 132px;
-            resize: vertical;
-            line-height: 1.55;
+        .sub{
+            color:var(--muted);
+            margin-bottom:28px;
         }
 
-        input::placeholder,
-        textarea::placeholder {
-            color: #94a3b8;
+        .field{
+            margin-bottom:20px;
         }
 
-        input:focus,
-        textarea:focus,
-        select:focus {
-            border-color: rgba(37, 99, 235, 0.85);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-            transform: translateY(-1px);
+        .field label{
+            display:block;
+
+            margin-bottom:10px;
+
+            font-size:13px;
+
+            text-transform:uppercase;
+
+            letter-spacing:1px;
+
+            color:#cbd5e1;
+
+            font-weight:700;
         }
 
-        .select-wrap {
-            position: relative;
+        .field input,
+        .field textarea,
+        .field select{
+
+            width:100%;
+
+            background:#111827;
+
+            border:1px solid rgba(255,255,255,.08);
+
+            color:white;
+
+            padding:16px 18px;
+
+            border-radius:18px;
+
+            outline:none;
+
+            transition:.3s;
         }
 
-        .select-wrap::after {
-            content: '▾';
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-46%);
-            color: #64748b;
-            pointer-events: none;
-            font-size: 1rem;
+        .field textarea{
+            resize:none;
+            min-height:120px;
         }
 
-        .actions-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 18px;
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus{
+
+            border-color:var(--blue);
+
+            box-shadow:
+            0 0 0 4px rgba(59,130,246,.15);
         }
 
-        .btn {
-            border: none;
-            border-radius: 16px;
-            padding: 14px 18px;
-            font-size: 0.98rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+        .submit-btn{
+            width:100%;
+
+            border:none;
+
+            padding:18px;
+
+            border-radius:18px;
+
+            background:
+            linear-gradient(135deg,
+            var(--blue),
+            var(--purple));
+
+            color:white;
+
+            font-size:16px;
+
+            font-weight:700;
+
+            cursor:pointer;
+
+            transition:.3s;
         }
 
-        .btn:hover {
-            transform: translateY(-1px);
+        .submit-btn:hover{
+            transform:translateY(-2px);
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            box-shadow: 0 14px 28px rgba(37, 99, 235, 0.25);
+        /* TABLE */
+
+        .table-card{
+            overflow:hidden;
         }
 
-        .btn-primary:hover {
-            box-shadow: 0 18px 35px rgba(37, 99, 235, 0.33);
+        .table-head{
+            padding:28px;
+
+            border-bottom:1px solid var(--border);
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
         }
 
-        .btn-ghost {
-            background: #e2e8f0;
-            color: #0f172a;
+        .task-count{
+            background:rgba(59,130,246,.12);
+
+            color:#60a5fa;
+
+            padding:10px 16px;
+
+            border-radius:999px;
+
+            font-size:13px;
+
+            font-weight:700;
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #16a34a, #15803d);
-            color: white;
+        .table-wrap{
+            width:100%;
+            overflow-x:auto;
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
+        table{
+            width:100%;
+            border-collapse:collapse;
         }
 
-        .table-panel {
-            padding: 0;
+        th{
+            padding:20px;
+
+            text-align:left;
+
+            color:var(--muted);
+
+            font-size:12px;
+
+            text-transform:uppercase;
+
+            letter-spacing:1px;
         }
 
-        .table-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            padding: 22px 22px 16px;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        td{
+            padding:22px 20px;
+
+            border-top:1px solid rgba(255,255,255,.05);
         }
 
-        .table-top h2 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: #0f172a;
-            font-weight: 800;
-            letter-spacing: -0.03em;
+        tr:hover{
+            background:rgba(255,255,255,.02);
         }
 
-        .table-top p {
-            margin: 6px 0 0;
-            color: var(--muted);
-            font-size: 0.95rem;
+        .task-title{
+            font-weight:700;
+            margin-bottom:4px;
         }
 
-        .table-wrap {
-            overflow-x: auto;
-            padding: 0 0 8px;
+        .task-desc{
+            color:var(--muted);
+            font-size:13px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            min-width: 920px;
+        .pill{
+            padding:8px 14px;
+
+            border-radius:999px;
+
+            font-size:12px;
+
+            font-weight:700;
         }
 
-        thead th {
-            text-align: left;
-            background: #0f172a;
-            color: white;
-            padding: 18px 18px;
-            font-size: 0.9rem;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            position: sticky;
-            top: 0;
-            z-index: 1;
+        .low{
+            background:rgba(16,185,129,.15);
+            color:#34d399;
         }
 
-        thead th:first-child { border-top-left-radius: 18px; }
-        thead th:last-child { border-top-right-radius: 18px; }
-
-        tbody tr {
-            background: #fff;
+        .medium{
+            background:rgba(245,158,11,.15);
+            color:#fbbf24;
         }
 
-        tbody tr:nth-child(even) {
-            background: #f8fafc;
+        .high{
+            background:rgba(239,68,68,.15);
+            color:#f87171;
         }
 
-        tbody td {
-            padding: 17px 18px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #0f172a;
-            vertical-align: top;
-            font-size: 0.95rem;
+        .pending{
+            background:rgba(59,130,246,.15);
+            color:#60a5fa;
         }
 
-        .id-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 38px;
-            height: 34px;
-            padding: 0 12px;
-            border-radius: 999px;
-            background: #e2e8f0;
-            color: #0f172a;
-            font-weight: 800;
+        .completed{
+            background:rgba(16,185,129,.15);
+            color:#34d399;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            white-space: nowrap;
+        .actions{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
         }
 
-        .badge-low { background: #dcfce7; color: #166534; }
-        .badge-medium { background: #fef3c7; color: #92400e; }
-        .badge-high { background: #fee2e2; color: #991b1b; }
-        .badge-pending { background: #dbeafe; color: #1d4ed8; }
-        .badge-completed { background: #dcfce7; color: #166534; }
+        .action-btn{
+            padding:10px 16px;
 
-        .task-title {
-            font-weight: 800;
-            font-size: 1rem;
-            color: #0f172a;
-            margin-bottom: 4px;
+            border-radius:14px;
+
+            text-decoration:none;
+
+            font-size:13px;
+
+            font-weight:700;
         }
 
-        .task-desc {
-            color: #64748b;
-            line-height: 1.5;
-            max-width: 420px;
+        .edit{
+            background:rgba(16,185,129,.15);
+            color:#34d399;
         }
 
-        .task-row-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .delete{
+            background:rgba(239,68,68,.15);
+            color:#f87171;
         }
 
-        .empty-state {
-            padding: 48px 22px 58px;
-            text-align: center;
-            color: #64748b;
+        /* CHARTS */
+
+        .charts-title{
+            margin-bottom:18px;
         }
 
-        .empty-state .icon {
-            width: 76px;
-            height: 76px;
-            margin: 0 auto 14px;
-            border-radius: 24px;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(124, 58, 237, 0.12));
-            color: #2563eb;
-            font-size: 34px;
+        .charts-title h2{
+            font-size:32px;
+            font-weight:800;
         }
 
-        .footer-note {
-            padding: 14px 22px 24px;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            text-align: center;
+        .charts{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:24px;
         }
 
-        @media (max-width: 1180px) {
-            .workspace {
-                grid-template-columns: 1fr;
+        .chart-card{
+            padding:26px;
+        }
+
+        .chart-card h3{
+            font-size:24px;
+            margin-bottom:8px;
+        }
+
+        .chart-card p{
+            color:var(--muted);
+            margin-bottom:20px;
+            font-size:13px;
+        }
+
+        .chart-box{
+            height:280px;
+        }
+
+        /* FOOTER */
+
+        .footer{
+            margin-top:40px;
+            text-align:center;
+            color:var(--muted);
+        }
+
+        .footer a{
+            color:#60a5fa;
+            text-decoration:none;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:1200px){
+
+            .dashboard{
+                grid-template-columns:1fr;
             }
+
+            .sidebar{
+                position:relative;
+                height:auto;
+            }
+
+            .content{
+                grid-template-columns:1fr;
+            }
+
+            .form-card{
+                position:relative;
+            }
+
         }
 
-        @media (max-width: 768px) {
-            body {
-                padding: 14px;
+        @media(max-width:900px){
+
+            .stats{
+                grid-template-columns:1fr;
             }
 
-            .hero {
-                padding: 18px;
-                border-radius: 26px;
+            .charts{
+                grid-template-columns:1fr;
             }
 
-            .brand-copy h1 {
-                font-size: 1.9rem;
+            .topbar{
+                flex-direction:column;
+                gap:20px;
+                align-items:flex-start;
             }
 
-            .table-top,
-            .header {
-                align-items: flex-start;
-                flex-direction: column;
+            .welcome h2{
+                font-size:36px;
             }
 
-            .stat-card {
-                min-width: 120px;
-                flex: 1 1 120px;
-            }
         }
+
     </style>
 </head>
+
 <body>
+
 @php
-    use Illuminate\Support\Carbon;
-    $totalTasks = $tasks->count();
-    $completedTasks = $tasks->where('status', 'Completed')->count();
-    $pendingTasks = $tasks->where('status', 'Pending')->count();
-    $isEditing = isset($editTask);
+
+$totalTasks = $tasks->count();
+
+$completedTasks = $tasks->where('status','Completed')->count();
+
+$pendingTasks = $tasks->where('status','Pending')->count();
+
+$lowTasks = $tasks->where('priority','Low')->count();
+
+$mediumTasks = $tasks->where('priority','Medium')->count();
+
+$highTasks = $tasks->where('priority','High')->count();
+
 @endphp
 
-<div class="shell">
-    <div class="hero">
-        <div class="header">
-            <div class="brand">
-                <div class="brand-badge">🚀</div>
-                <div class="brand-copy">
-                    <h1>{{ $isEditing ? 'Update Task' : 'Professional Laravel To Do App' }}</h1>
-                    <p>Clean CRUD interface powered by Laravel, MySQL, and Blade templates.</p>
-                </div>
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🚀
             </div>
 
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-label">Total Tasks</div>
-                    <div class="stat-value">{{ $totalTasks }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Completed</div>
-                    <div class="stat-value">{{ $completedTasks }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Pending</div>
-                    <div class="stat-value">{{ $pendingTasks }}</div>
-                </div>
+            <div>
+                <h1>Laravel</h1>
+                <p>Task Manager</p>
             </div>
+
         </div>
 
-        <div class="workspace">
-            <div class="panel">
-                <div class="panel-head">
-                    <h2 class="panel-title">{{ $isEditing ? 'Edit Task Details' : 'Add New Task' }}</h2>
-                    <p class="panel-subtitle">Enter the task information and save it to your database.</p>
-                </div>
+        <div class="nav">
 
-                <div class="form-wrap">
-                    @if($isEditing)
-                        <form action="/update/{{ $editTask->id }}" method="POST">
-                    @else
-                        <form action="/store" method="POST">
-                    @endif
-                        @csrf
 
-                        <div class="field">
-                            <div class="label-row">
-                                <label for="title">Task Title</label>
-                                <span class="hint">Required</span>
-                            </div>
-                            <input id="title" type="text" name="title" placeholder="e.g. Complete Laravel assignment" value="{{ $editTask->title ?? '' }}" required>
-                        </div>
+    <a href="{{ url('/dashboard') }}" class="menu-item active">
+        🏠 Dashboard
+    </a>
 
-                        <div class="field">
-                            <div class="label-row">
-                                <label for="description">Description</label>
-                                <span class="hint">Optional</span>
-                            </div>
-                            <textarea id="description" name="description" placeholder="Write a short description of the task">{{ $editTask->description ?? '' }}</textarea>
-                        </div>
+    <a href="{{ url('/tasks') }}" class="menu-item">
+        📋 Tasks
+    </a>
 
-                        <div class="field">
-                            <div class="label-row">
-                                <label for="due_date">Due Date</label>
-                                <span class="hint">Optional</span>
-                            </div>
-                            <input id="due_date" type="date" name="due_date" value="{{ $editTask->due_date ?? '' }}">
-                        </div>
+    <a href="{{ url('/analytics') }}" class="menu-item">
+        📊 Analytics
+    </a>
 
-                        <div class="field">
-                            <div class="label-row">
-                                <label for="priority">Priority</label>
-                                <span class="hint">Choose urgency</span>
-                            </div>
-                            <div class="select-wrap">
-                                <select id="priority" name="priority">
-                                    <option value="Low" {{ (isset($editTask) && $editTask->priority === 'Low') || (!isset($editTask) && false) ? 'selected' : '' }}>Low</option>
-                                    <option value="Medium" {{ (isset($editTask) && $editTask->priority === 'Medium') || !isset($editTask) ? 'selected' : '' }}>Medium</option>
-                                    <option value="High" {{ isset($editTask) && $editTask->priority === 'High' ? 'selected' : '' }}>High</option>
-                                </select>
-                            </div>
-                        </div>
+    <a href="{{ url('/profile') }}" class="menu-item">
+        👤 Profile
+    </a>
 
-                        <div class="field">
-                            <div class="label-row">
-                                <label for="status">Status</label>
-                                <span class="hint">Track progress</span>
-                            </div>
-                            <div class="select-wrap">
-                                <select id="status" name="status">
-                                    <option value="Pending" {{ (isset($editTask) && $editTask->status === 'Pending') || !isset($editTask) ? 'selected' : '' }}>Pending</option>
-                                    <option value="Completed" {{ isset($editTask) && $editTask->status === 'Completed' ? 'selected' : '' }}>Completed</option>
-                                </select>
-                            </div>
-                        </div>
+    <a href="{{ url('/settings') }}" class="menu-item">
+        ⚙️ Settings
+    </a>
 
-                        <div class="actions-row">
-                            <button type="submit" class="btn btn-primary">{{ $isEditing ? 'Update Task' : 'Add Task' }}</button>
-                            @if($isEditing)
-                                <a href="/" class="btn btn-ghost">Cancel Edit</a>
-                            @endif
-                        </div>
-                    </form>
-                </div>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="welcome">
+
+                <h2>
+                    Professional <span>Laravel</span> Dashboard
+                </h2>
+
+                <p>
+                    Premium task management system
+                </p>
+
             </div>
 
-            <div class="panel table-panel">
-                <div class="table-top">
-                    <div>
-                        <h2>Task List</h2>
-                        <p>Manage your tasks with edit and delete actions.</p>
+            <div class="profile">
+
+                <div class="avatar">
+
+                    {{ strtoupper(substr(Auth::user()->name ?? 'U',0,1)) }}
+
+                </div>
+
+                <div>
+
+                    <h4>
+                        {{ Auth::user()->name ?? 'Guest' }}
+                    </h4>
+
+                    <p style="color:var(--muted)">
+                        {{ Auth::user()->email ?? '' }}
+                    </p>
+
+                </div>
+
+                @auth
+
+                <form method="POST"
+                action="{{ route('logout') }}">
+
+                    @csrf
+
+                    <button class="logout-btn">
+                        Logout
+                    </button>
+
+                </form>
+
+                @endauth
+
+            </div>
+
+        </div>
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <h5>Total Tasks</h5>
+
+                <h2 style="color:#60a5fa">
+                    {{ $totalTasks }}
+                </h2>
+
+                <div class="stat-icon">📋</div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h5>Completed</h5>
+
+                <h2 style="color:#34d399">
+                    {{ $completedTasks }}
+                </h2>
+
+                <div class="stat-icon">✅</div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h5>Pending</h5>
+
+                <h2 style="color:#c084fc">
+                    {{ $pendingTasks }}
+                </h2>
+
+                <div class="stat-icon">⏳</div>
+
+            </div>
+
+        </div>
+
+        <!-- CONTENT -->
+
+        <div class="content">
+
+            <!-- FORM -->
+
+            <div class="card form-card">
+
+                <h2 class="title">
+
+                    {{ isset($editTask) ? 'Edit Task' : 'Add New Task' }}
+
+                </h2>
+
+                <p class="sub">
+                    Create and manage tasks professionally.
+                </p>
+
+                @if(isset($editTask))
+
+<form action="{{ route('task.update', $editTask->id) }}" method="POST">
+
+    @csrf
+
+@else
+
+<form action="/store" method="POST">
+
+    @csrf
+
+@endif
+
+                    <div class="field">
+
+                        <label>Task Title</label>
+
+                        <input
+                        type="text"
+                        name="title"
+
+                        value="{{ $editTask->title ?? '' }}"
+
+                        required>
+
                     </div>
+
+                    <div class="field">
+
+                        <label>Description</label>
+
+                        <textarea
+                        name="description">{{ $editTask->description ?? '' }}</textarea>
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>Due Date</label>
+
+                        <input
+                        type="date"
+                        name="due_date"
+
+                        value="{{ $editTask->due_date ?? '' }}">
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>Priority</label>
+
+                        <select name="priority">
+
+                            <option value="Low"
+                            {{ isset($editTask) && $editTask->priority == 'Low' ? 'selected' : '' }}>
+                                Low
+                            </option>
+
+                            <option value="Medium"
+                            {{ isset($editTask) && $editTask->priority == 'Medium' ? 'selected' : '' }}>
+                                Medium
+                            </option>
+
+                            <option value="High"
+                            {{ isset($editTask) && $editTask->priority == 'High' ? 'selected' : '' }}>
+                                High
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>Status</label>
+
+                        <select name="status">
+
+                            <option value="Pending"
+                            {{ isset($editTask) && $editTask->status == 'Pending' ? 'selected' : '' }}>
+                                Pending
+                            </option>
+
+                            <option value="Completed"
+                            {{ isset($editTask) && $editTask->status == 'Completed' ? 'selected' : '' }}>
+                                Completed
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button class="submit-btn">
+
+                        {{ isset($editTask)
+                        ? '✦ Update Task'
+                        : '✦ Add Task' }}
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="card table-card">
+
+                <div class="table-head">
+
+                    <div>
+
+                        <h2 class="title">
+                            Task List
+                        </h2>
+
+                        <p class="sub">
+                            Manage all your tasks professionally.
+                        </p>
+
+                    </div>
+
+                    <div class="task-count">
+
+                        {{ $totalTasks }} Tasks
+
+                    </div>
+
                 </div>
 
                 <div class="table-wrap">
+
                     <table>
+
                         <thead>
+
                             <tr>
-                                <th style="width: 86px;">ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th style="width: 150px;">Due Date</th>
-                                <th style="width: 140px;">Priority</th>
-                                <th style="width: 140px;">Status</th>
-                                <th style="width: 190px;">Actions</th>
+
+                                <th>ID</th>
+                                <th>Task</th>
+                                <th>Due Date</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+
                             </tr>
+
                         </thead>
+
                         <tbody>
-                            @forelse($tasks as $task)
-                                <tr>
-                                    <td><span class="id-pill">{{ $task->id }}</span></td>
-                                    <td>
-                                        <div class="task-title">{{ $task->title }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="task-desc">{{ $task->description ?: 'No description added' }}</div>
-                                    </td>
-                                    <td>{{ $task->due_date ? Carbon::parse($task->due_date)->format('d M Y') : '—' }}</td>
-                                    <td>
-                                        <span class="badge {{ strtolower($task->priority) === 'high' ? 'badge-high' : (strtolower($task->priority) === 'low' ? 'badge-low' : 'badge-medium') }}">
-                                            {{ $task->priority }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ strtolower($task->status) === 'completed' ? 'badge-completed' : 'badge-pending' }}">
-                                            {{ $task->status }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="task-row-actions">
-                                            <a href="/edit/{{ $task->id }}" class="btn btn-success">Edit</a>
-                                            <a href="/delete/{{ $task->id }}" class="btn btn-danger" onclick="return confirm('Delete this task?')">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7">
-                                        <div class="empty-state">
-                                            <div class="icon">🗂️</div>
-                                            <h3 style="margin:0 0 8px; color:#0f172a;">No tasks yet</h3>
-                                            <p style="margin:0;">Add your first task using the form on the left.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
+
+                        @foreach($tasks as $task)
+
+                            <tr>
+
+                                <td>
+                                    #{{ $task->id }}
+                                </td>
+
+                                <td>
+
+                                    <div class="task-title">
+                                        {{ $task->title }}
+                                    </div>
+
+                                    <div class="task-desc">
+                                        {{ $task->description }}
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    {{ $task->due_date ?? '---' }}
+
+                                </td>
+
+                                <td>
+
+                                    <span class="pill
+                                    {{ strtolower($task->priority) }}">
+
+                                        {{ $task->priority }}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="pill
+                                    {{ strtolower($task->status) }}">
+
+                                        {{ $task->status }}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <a
+                                        href="/edit/{{ $task->id }}"
+                                        class="action-btn edit">
+
+                                            Edit
+
+                                        </a>
+
+                                        <a
+                                        href="/delete/{{ $task->id }}"
+                                        class="action-btn delete">
+
+                                            Delete
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
                         </tbody>
+
                     </table>
+
                 </div>
 
-                <div class="footer-note">Built with Laravel MVC, MySQL, Blade, and secure database interaction.</div>
             </div>
+
         </div>
-    </div>
+
+        <!-- CHARTS -->
+
+        <div class="charts-title">
+
+            <h2>Analytics Overview</h2>
+
+        </div>
+
+        <div class="charts">
+
+            <div class="card chart-card">
+
+                <h3>Status Overview</h3>
+
+                <p>
+                    Completed vs Pending Tasks
+                </p>
+
+                <div class="chart-box">
+                    <canvas id="statusChart"></canvas>
+                </div>
+
+            </div>
+
+            <div class="card chart-card">
+
+                <h3>Priority Report</h3>
+
+                <p>
+                    Task priority analytics
+                </p>
+
+                <div class="chart-box">
+                    <canvas id="priorityChart"></canvas>
+                </div>
+
+            </div>
+
+            <div class="card chart-card">
+
+                <h3>Task Activity</h3>
+
+                <p>
+                    Weekly productivity overview
+                </p>
+
+                <div class="chart-box">
+                    <canvas id="activityChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="footer">
+
+            Developed by
+            <strong>Muhammad Ahmad</strong>
+
+            •
+
+            <a href="https://m-ahmad069.github.io/"
+            target="_blank">
+
+                Portfolio Website
+
+            </a>
+
+        </div>
+
+    </main>
+
 </div>
-    <footer style="margin-top:40px;text-align:center;padding:20px;color:#cbd5e1;font-size:15px;">
-        Developed by <strong>Muhammad Ahmad</strong> • 
-        <a href="https://m-ahmad069.github.io/" target="_blank" style="color:#60a5fa;text-decoration:none;font-weight:600;">
-            Portfolio Website
-        </a>
-    </footer>
+
+<script>
+
+Chart.defaults.color='#94a3b8';
+
+Chart.defaults.font.family="'Inter', sans-serif";
+
+new Chart(document.getElementById('statusChart'),{
+
+    type:'doughnut',
+
+    data:{
+        labels:['Completed','Pending'],
+
+        datasets:[{
+
+            data:[
+                {{ $completedTasks }},
+                {{ $pendingTasks }}
+            ],
+
+            backgroundColor:[
+                '#10b981',
+                '#3b82f6'
+            ],
+
+            borderWidth:0
+        }]
+    },
+
+    options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        cutout:'70%'
+    }
+
+});
+
+new Chart(document.getElementById('priorityChart'),{
+
+    type:'bar',
+
+    data:{
+        labels:['Low','Medium','High'],
+
+        datasets:[{
+
+            data:[
+                {{ $lowTasks }},
+                {{ $mediumTasks }},
+                {{ $highTasks }}
+            ],
+
+            backgroundColor:[
+                '#10b981',
+                '#f59e0b',
+                '#ef4444'
+            ],
+
+            borderRadius:12
+
+        }]
+    },
+
+    options:{
+        responsive:true,
+        maintainAspectRatio:false,
+
+        plugins:{
+            legend:{
+                display:false
+            }
+        }
+    }
+
+});
+
+new Chart(document.getElementById('activityChart'),{
+
+    type:'line',
+
+    data:{
+        labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+
+        datasets:[{
+
+            data:[2,4,3,5,4,6,7],
+
+            borderColor:'#8b5cf6',
+
+            backgroundColor:'rgba(139,92,246,.15)',
+
+            fill:true,
+
+            tension:.4
+
+        }]
+    },
+
+    options:{
+        responsive:true,
+        maintainAspectRatio:false,
+
+        plugins:{
+            legend:{
+                display:false
+            }
+        }
+    }
+
+});
+
+</script>
+
 </body>
 </html>
