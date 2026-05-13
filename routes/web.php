@@ -16,42 +16,79 @@ Route::get('/dashboard', [TaskController::class, 'index'])
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes
+| Tasks Page
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Task CRUD
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post('/store', [TaskController::class, 'store']);
-
-    Route::get('/delete/{id}', [TaskController::class, 'delete']);
-
-    Route::get('/edit/{id}', [TaskController::class, 'edit']);
-
-    Route::post('/update/{id}', [TaskController::class, 'update']);
-
-    /*
-    |--------------------------------------------------------------------------
-    | Extra Pages
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/analytics', [TaskController::class, 'analytics']);
-
-    Route::get('/profile', [TaskController::class, 'profile']);
-
-    Route::get('/settings', [TaskController::class, 'settings']);
-});
+Route::get('/tasks', [TaskController::class, 'tasks'])
+    ->name('tasks');
 
 /*
 |--------------------------------------------------------------------------
-| Breeze Auth
+| Store Task
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/store-task', [TaskController::class, 'store'])
+    ->name('store.task');
+
+/*
+|--------------------------------------------------------------------------
+| Edit Task
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/edit-task/{id}', [TaskController::class, 'edit'])
+    ->name('edit.task');
+
+/*
+|--------------------------------------------------------------------------
+| Update Task
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/update-task/{id}', [TaskController::class, 'update'])
+    ->name('update.task');
+
+/*
+|--------------------------------------------------------------------------
+| Delete Task
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/delete-task/{id}', [TaskController::class, 'delete'])
+    ->name('delete.task');
+
+/*
+|--------------------------------------------------------------------------
+| Analytics
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/analytics', [TaskController::class, 'analytics'])
+    ->name('analytics');
+
+/*
+|--------------------------------------------------------------------------
+| Profile
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/profile', [TaskController::class, 'profile'])
+    ->name('profile');
+
+/*
+|--------------------------------------------------------------------------
+| Settings
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/settings', [TaskController::class, 'settings'])
+    ->name('settings');
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
 |--------------------------------------------------------------------------
 */
 

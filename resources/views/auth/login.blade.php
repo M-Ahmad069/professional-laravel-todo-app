@@ -1,266 +1,406 @@
-<x-guest-layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+    <title>Login - TaskFlow</title>
 
-    body{
-        margin:0;
-        padding:0;
-        font-family:'Inter',sans-serif;
+    <style>
 
-        background:
-        radial-gradient(circle at top left, rgba(37,99,235,.15), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(99,102,241,.12), transparent 30%),
-        #0f172a;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
 
-        overflow-x:hidden;
-    }
+        html,
+        body{
+            width:100%;
+            min-height:100%;
+            overflow-x:hidden;
+        }
 
-    .main-wrapper{
-        min-height:100vh;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:30px;
-    }
+        body{
 
-    .login-card{
+            background:
+            linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(135deg,#081028,#020617,#16052f);
 
-        width:100%;
-        max-width:470px;
+            background-size:50px 50px,50px 50px,cover;
 
-        background:rgba(255,255,255,.96);
+            display:flex;
+            justify-content:center;
+            align-items:center;
 
-        border-radius:30px;
+            padding:60px 20px;
 
-        padding:55px;
+            position:relative;
+        }
 
-        box-shadow:
-        0 30px 80px rgba(0,0,0,.35);
+        body::before{
+            content:'';
+            position:absolute;
 
-        backdrop-filter:blur(20px);
+            width:450px;
+            height:450px;
 
-        border:1px solid rgba(255,255,255,.2);
-    }
+            background:#4f46e5;
 
-    .title{
-        font-size:42px;
-        font-weight:800;
-        color:#0f172a;
-        text-align:center;
-        margin-bottom:10px;
-    }
+            border-radius:50%;
 
-    .subtitle{
-        text-align:center;
-        color:#64748b;
-        font-size:17px;
-        margin-bottom:40px;
-        line-height:1.7;
-    }
+            filter:blur(160px);
 
-    .input-group{
-        margin-bottom:24px;
-    }
+            top:-150px;
+            left:-120px;
 
-    .input-label{
-        display:block;
-        margin-bottom:10px;
-        font-weight:700;
-        color:#111827;
-        font-size:15px;
-    }
+            opacity:0.35;
+        }
 
-    .custom-input{
+        body::after{
+            content:'';
+            position:absolute;
 
-        width:100%;
-        padding:16px 18px;
+            width:450px;
+            height:450px;
 
-        border-radius:18px;
+            background:#9333ea;
 
-        border:1px solid #d1d5db;
+            border-radius:50%;
 
-        background:#f8fafc;
+            filter:blur(160px);
 
-        outline:none;
+            bottom:-150px;
+            right:-120px;
 
-        font-size:15px;
+            opacity:0.30;
+        }
 
-        transition:.25s;
-        box-sizing:border-box;
-    }
+        .container{
+            width:100%;
+            max-width:470px;
 
-    .custom-input:focus{
+            position:relative;
+            z-index:5;
+        }
 
-        border-color:#2563eb;
+        .login-card{
 
-        background:white;
+            width:100%;
 
-        box-shadow:
-        0 0 0 5px rgba(37,99,235,.10);
-    }
+            background:rgba(4,10,28,0.78);
 
-    .remember-row{
+            border:1px solid rgba(255,255,255,0.08);
 
-        display:flex;
-        align-items:center;
-        gap:10px;
+            backdrop-filter:blur(20px);
 
-        margin-top:5px;
-        margin-bottom:30px;
+            border-radius:30px;
 
-        color:#475569;
-        font-size:15px;
-    }
+            padding:45px;
 
-    .login-btn{
+            box-shadow:
+            0 0 30px rgba(59,130,246,0.18),
+            0 0 90px rgba(168,85,247,0.12);
+        }
 
-        width:100%;
+        .logo{
 
-        border:none;
+            width:90px;
+            height:90px;
 
-        padding:16px;
+            margin:0 auto 25px;
 
-        border-radius:18px;
+            border-radius:25px;
 
-        background:
-        linear-gradient(135deg,#2563eb,#1d4ed8);
+            background:linear-gradient(135deg,#2563eb,#9333ea);
 
-        color:white;
+            display:flex;
+            justify-content:center;
+            align-items:center;
 
-        font-size:16px;
-        font-weight:700;
+            font-size:42px;
 
-        cursor:pointer;
+            box-shadow:
+            0 0 25px rgba(99,102,241,0.35);
+        }
 
-        transition:.25s;
+        .title{
+            text-align:center;
 
-        box-shadow:
-        0 15px 35px rgba(37,99,235,.30);
-    }
+            font-size:64px;
+            font-weight:800;
 
-    .login-btn:hover{
+            color:white;
 
-        transform:translateY(-2px);
+            margin-bottom:12px;
 
-        box-shadow:
-        0 20px 40px rgba(37,99,235,.35);
-    }
+            line-height:1;
+        }
 
-    .bottom-links{
+        .title span{
+            background:linear-gradient(90deg,#60a5fa,#a855f7);
 
-        text-align:center;
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
 
-        margin-top:28px;
+        .subtitle{
+            text-align:center;
 
-        color:#64748b;
+            color:#9ca3af;
 
-        line-height:2;
-    }
+            font-size:18px;
 
-    .bottom-links a{
+            line-height:1.7;
 
-        color:#2563eb;
+            margin-bottom:40px;
+        }
 
-        text-decoration:none;
+        .form-group{
+            margin-bottom:24px;
+        }
 
-        font-weight:700;
-    }
+        .form-group label{
+            display:block;
 
-    .bottom-links a:hover{
-        text-decoration:underline;
-    }
+            color:white;
 
-</style>
+            font-size:17px;
+            font-weight:600;
 
-<div class="main-wrapper">
+            margin-bottom:12px;
+        }
 
-    <div class="login-card">
+        .form-input{
 
-        <div class="title">
-            Sign In
-        </div>
+            width:100%;
+            height:62px;
 
-        <div class="subtitle">
-            Access your professional task management dashboard
-        </div>
+            padding:0 22px;
 
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+            border-radius:18px;
 
-        <form method="POST" action="{{ route('login') }}">
+            border:1px solid rgba(255,255,255,0.08);
 
-            @csrf
+            background:rgba(0,0,0,0.22);
 
-            <div class="input-group">
+            color:white;
 
-                <label class="input-label">
-                    Email Address
-                </label>
+            font-size:17px;
 
-                <input
-                    type="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    required
-                    autofocus
-                    class="custom-input"
-                    placeholder="Enter your email"
-                >
+            outline:none;
+
+            transition:0.3s;
+        }
+
+        .form-input:focus{
+
+            border:1px solid #6366f1;
+
+            box-shadow:
+            0 0 18px rgba(99,102,241,0.35);
+        }
+
+        .form-input::placeholder{
+            color:#6b7280;
+        }
+
+        .remember{
+
+            display:flex;
+            align-items:center;
+
+            gap:10px;
+
+            margin-top:5px;
+            margin-bottom:28px;
+
+            color:#cbd5e1;
+
+            font-size:17px;
+        }
+
+        .remember input{
+            width:18px;
+            height:18px;
+        }
+
+        .login-btn{
+
+            width:100%;
+            height:65px;
+
+            border:none;
+            border-radius:20px;
+
+            background:linear-gradient(90deg,#2563eb,#7c3aed);
+
+            color:white;
+
+            font-size:22px;
+            font-weight:700;
+
+            cursor:pointer;
+
+            transition:0.3s;
+
+            box-shadow:
+            0 0 25px rgba(99,102,241,0.35);
+        }
+
+        .login-btn:hover{
+
+            transform:translateY(-2px);
+
+            box-shadow:
+            0 0 35px rgba(139,92,246,0.45);
+        }
+
+        .bottom-links{
+
+            margin-top:30px;
+
+            text-align:center;
+
+            color:#94a3b8;
+
+            font-size:16px;
+
+            line-height:2;
+        }
+
+        .bottom-links a{
+
+            color:#60a5fa;
+
+            text-decoration:none;
+
+            font-weight:700;
+        }
+
+        .bottom-links a:hover{
+            color:#c084fc;
+        }
+
+        @media(max-width:600px){
+
+            body{
+                padding:35px 15px;
+            }
+
+            .login-card{
+                padding:32px 24px;
+                border-radius:24px;
+            }
+
+            .title{
+                font-size:48px;
+            }
+
+            .subtitle{
+                font-size:15px;
+            }
+
+            .form-input{
+                height:58px;
+                font-size:16px;
+            }
+
+            .login-btn{
+                height:60px;
+                font-size:20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="login-card">
+
+            <div class="logo">
+                🚀
             </div>
 
-            <div class="input-group">
+            <h1 class="title">
+                Task<span>Flow</span>
+            </h1>
 
-                <label class="input-label">
-                    Password
-                </label>
+            <p class="subtitle">
+                Professional Laravel task management dashboard
+            </p>
 
-                <input
-                    type="password"
-                    name="password"
-                    required
-                    class="custom-input"
-                    placeholder="Enter your password"
-                >
-            </div>
+            <form method="POST" action="{{ route('login') }}">
 
-            <div class="remember-row">
+                @csrf
 
-                <input type="checkbox" name="remember">
+                <div class="form-group">
 
-                <span>
-                    Remember Me
-                </span>
+                    <label>Email Address</label>
 
-            </div>
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="Enter your email"
+                        required
+                    >
 
-            <button type="submit" class="login-btn">
-                Login to Dashboard
-            </button>
+                </div>
+
+                <div class="form-group">
+
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-input"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                </div>
+
+                <div class="remember">
+
+                    <input type="checkbox" name="remember">
+
+                    <span>Remember Me</span>
+
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Login To Dashboard
+                </button>
+
+            </form>
 
             <div class="bottom-links">
 
-                <div>
-                    Don’t have an account?
-                    <a href="{{ route('register') }}">
-                        Create Account
-                    </a>
-                </div>
+                Don’t have an account?
 
-                @if (Route::has('password.request'))
+                <a href="{{ route('register') }}">
+                    Create Account
+                </a>
 
-                    <div>
-                        <a href="{{ route('password.request') }}">
-                            Forgot Password?
-                        </a>
-                    </div>
+                <br>
 
-                @endif
+                <a href="{{ route('password.request') }}">
+                    Forgot Password?
+                </a>
 
             </div>
 
-        </form>
+        </div>
 
     </div>
 
-</div>
-
-</x-guest-layout>
+</body>
+</html>

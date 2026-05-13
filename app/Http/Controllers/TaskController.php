@@ -8,22 +8,41 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
+
     /*
     |--------------------------------------------------------------------------
-    | Dashboard
+    | Dashboard Page
     |--------------------------------------------------------------------------
     */
 
     public function index()
     {
-        if (Auth::check()) {
+        if (Auth::check())
+        {
+            $tasks = Task::where('user_id', Auth::id())->get();
+        }
+        else
+        {
+            $tasks = collect();
+        }
 
-            $tasks = Task::where('user_id', Auth::id())
-                ->latest()
-                ->get();
+        return view('welcome', compact('tasks'));
+    }
 
-        } else {
+    /*
+    |--------------------------------------------------------------------------
+    | Tasks Page
+    |--------------------------------------------------------------------------
+    */
 
+    public function tasks()
+    {
+        if (Auth::check())
+        {
+            $tasks = Task::where('user_id', Auth::id())->get();
+        }
+        else
+        {
             $tasks = collect();
         }
 
@@ -38,6 +57,7 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+
         Task::create([
 
             'user_id' => Auth::id(),
@@ -64,8 +84,9 @@ class TaskController extends Controller
 
     public function delete($id)
     {
+
         $task = Task::where('user_id', Auth::id())
-            ->findOrFail($id);
+                    ->findOrFail($id);
 
         $task->delete();
 
@@ -80,12 +101,11 @@ class TaskController extends Controller
 
     public function edit($id)
     {
-        $tasks = Task::where('user_id', Auth::id())
-            ->latest()
-            ->get();
+
+        $tasks = Task::where('user_id', Auth::id())->get();
 
         $editTask = Task::where('user_id', Auth::id())
-            ->findOrFail($id);
+                        ->findOrFail($id);
 
         return view('welcome', compact('tasks', 'editTask'));
     }
@@ -98,8 +118,9 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
     {
+
         $task = Task::where('user_id', Auth::id())
-            ->findOrFail($id);
+                    ->findOrFail($id);
 
         $task->update([
 
@@ -149,4 +170,5 @@ class TaskController extends Controller
     {
         return view('settings');
     }
+
 }
